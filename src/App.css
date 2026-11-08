@@ -15,6 +15,9 @@
 
 * { box-sizing: border-box; }
 
+html, body { scrollbar-width: none; -ms-overflow-style: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
 body {
   margin: 0;
   font-family: 'Rajdhani', system-ui, sans-serif;
@@ -151,7 +154,11 @@ body {
 .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; opacity: 0.7; }
 .search-input { padding-left: 36px; height: 44px; font-size: 14px; }
 
-.quest-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.quest-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; scrollbar-width: thin; scrollbar-color: var(--ice-accent) transparent; }
+.quest-list::-webkit-scrollbar { width: 6px; }
+.quest-list::-webkit-scrollbar-track { background: transparent; }
+.quest-list::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--ice-accent), var(--ice-accent-2)); border-radius: 999px; }
+.quest-list::-webkit-scrollbar-thumb:hover { background: var(--ice-accent-2); }
 .quest-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; min-height: 78px; border: 1px solid var(--ice-border); border-radius: 8px; background: rgba(16,28,43,0.5); transition: background .15s, border-color .15s; }
 .quest-item:hover { background: rgba(38,59,77,0.5); border-color: var(--ice-accent); }
 .quest-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
