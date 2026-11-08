@@ -1,0 +1,18 @@
+[
+  { "id": "quest-001", "name": "A Reason Behind The Hunger", "monster": "Savage Deviljho" },
+  { "id": "quest-002", "name": "Old Dog, New Trick", "monster": "Zinogre" },
+  { "id": "quest-003", "name": "A Glance of Silver", "monster": "Silver Rathalos" },
+  { "id": "quest-004", "name": "The Cold Never Bothered Me", "monster": "Beotodus" },
+  { "id": "quest-005", "name": "Mew are Number One!", "monster": "Pukei-Pukei" },
+  { "id": "quest-006", "name": "The Thunderous", "monster": "Rajang" },
+  { "id": "quest-007", "name": "Baron of the Sea", "monster": "Jyuratodus" },
+  { "id": "quest-008", "name": "Fire and Ice", "monster": "Legiana" },
+  { "id": "quest-009", "name": "The Greatest Jagras", "monster": "Great Jagras" },
+  { "id": "quest-010", "name": "A Tale of Two Tails", "monster": "Odogaron" },
+  { "id": "quest-011", "name": "Sleep Now in the Fire", "monster": "Anjanath" },
+  { "id": "quest-012", "name": "The Forest Phantom", "monster": "Tobi-Kadachi" },
+  { "id": "quest-013", "name": "Wicked Beasts", "monster": "Tigrex" },
+  { "id": "quest-014", "name": "Blazing Sun", "monster": "Glavenus" },
+  { "id": "quest-015", "name": "The Iceborne Wyvern", "monster": "Velkhana" },
+  { "id": "quest-016", "name": "The Final Stand", "monster": "Safi'jiiva" }
+]
