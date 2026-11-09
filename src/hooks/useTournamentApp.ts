@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import type { AppState, Match, Participant, Tournament } from '../types'
 import { formatTime, parseTime } from '../utils/time'
 import { createTournament, nameOf, assignQuestsToMatches } from '../utils/tournament'
@@ -34,9 +34,7 @@ export function useTournamentApp() {
   const [timeBInput, setTimeBInput] = useState('')
   const [dnfA, setDnfA] = useState(false)
   const [dnfB, setDnfB] = useState(false)
-  const [notesInput, setNotesInput] = useState('')
-  const fileARef = useRef<HTMLInputElement>(null)
-  const fileBRef = useRef<HTMLInputElement>(null)
+
 
   useEffect(() => {
     try { localStorage.setItem('mhw_state', JSON.stringify(state)) } catch {}
@@ -75,7 +73,6 @@ export function useTournamentApp() {
     setTimeBInput(sm.timeB !== null ? formatTime(sm.timeB) : '')
     setDnfA(sm.dnfA)
     setDnfB(sm.dnfB)
-    setNotesInput(sm.notes)
     setOverrideChoice(null)
     setOverrideReason('')
   }, [selectedMatchId, current])
@@ -196,37 +193,22 @@ export function useTournamentApp() {
     updateCurrent((t) => ({
       ...t,
       matches: t.matches.map((m) =>
-        m.id === selectedMatchId ? { ...m, timeA: ta, timeB: tb, dnfA, dnfB, notes: notesInput, status: (m.status === 'completed' ? m.status : 'awaiting') } : m
+        m.id === selectedMatchId ? { ...m, timeA: ta, timeB: tb, dnfA, dnfB, status: (m.status === 'completed' ? m.status : 'awaiting') } : m
       ),
     }))
     setError(null)
   }
 
-  function handleFile(side: 'A' | 'B', file: File | null) {
-    if (!file || !selectedMatchId) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      const data = reader.result as string
-      updateCurrent((t) => ({
-        ...t,
-        matches: t.matches.map((m) =>
-          m.id === selectedMatchId ? (side === 'A' ? { ...m, proofA: data } : { ...m, proofB: data }) : m
-        ),
-      }))
-    }
-    reader.readAsDataURL(file)
-  }
 
   function determineWinner(m: Match): number | null {
     const aValid = !m.dnfA && m.timeA !== null
     const bValid = !m.dnfB && m.timeB !== null
     if (aValid && bValid) {
-      if (m.timeA! < m.timeB!) return m.p1 as number
-      if (m.timeB! < m.timeA!) return m.p2 as number
-      return null
+      if (m.timeA === m.timeB) return null
+      return m.timeA! < m.timeB! ? m.p1! : m.p2!
     }
-    if (aValid && !bValid) return m.p1 as number
-    if (!aValid && bValid) return m.p2 as number
+    if (aValid) return m.p1!
+    if (bValid) return m.p2!
     return null
   }
 
@@ -286,7 +268,7 @@ export function useTournamentApp() {
           id: 'GF-2', bracket: 'GF', round: 2,
           source1: { type: 'none' }, source2: { type: 'none' },
           p1: gf1.p1 ?? null, p2: gf1.p2 ?? null, winner: null, loser: null, questId: null, status: 'ready',
-          timeA: null, timeB: null, dnfA: false, dnfB: false, proofA: null, proofB: null, notes: '', confirmed: false, overrideReason: null,
+          timeA: null, timeB: null, dnfA: false, dnfB: false, timerStart: null, confirmed: false, overrideReason: null,
           winnerTo: null, loserTo: null, propagated: true,
         })
       }
@@ -328,11 +310,10 @@ export function useTournamentApp() {
     newParticipantName, setNewParticipantName, importText, setImportText,
     editId, editName, setEditName, setEditId, startEdit, saveEdit,
     overrideChoice, setOverrideChoice, overrideReason, setOverrideReason,
-    timeAInput, setTimeAInput, timeBInput, setTimeBInput, dnfA, setDnfA, dnfB, setDnfB, notesInput, setNotesInput,
-    fileARef, fileBRef,
+    timeAInput, setTimeAInput, timeBInput, setTimeBInput, dnfA, setDnfA, dnfB, setDnfB,
     setView, updateCurrent, addParticipant, importParticipants, deleteParticipant,
     updateConfig, runRandomizer, confirmStart, regenerate, newTournament,
-    saveTimes, handleFile, confirmResult,
+    saveTimes, confirmResult,
     ubRounds, lbRounds, championParticipant, selectedMatch, quests,
     setError, setInfo,
   }

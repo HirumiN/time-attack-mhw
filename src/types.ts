@@ -31,9 +31,7 @@ export interface Match {
   timeB: number | null
   dnfA: boolean
   dnfB: boolean
-  proofA: string | null
-  proofB: string | null
-  notes: string
+  timerStart: number | null
   confirmed: boolean
   overrideReason: string | null
   propagated: boolean

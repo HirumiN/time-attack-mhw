@@ -111,7 +111,7 @@ export function generateTournament(participants: Participant[]): { M: number; sl
         source1: r === 1 ? { type: 'seed', seedIndex: 2 * i } : { type: 'match', matchId: `UB-${r - 1}-${2 * i}`, result: 'winner' },
         source2: r === 1 ? { type: 'seed', seedIndex: 2 * i + 1 } : { type: 'match', matchId: `UB-${r - 1}-${2 * i + 1}`, result: 'winner' },
         p1: undefined, p2: undefined, winner: null, loser: null, questId: null, status: 'upcoming',
-        timeA: null, timeB: null, dnfA: false, dnfB: false, proofA: null, proofB: null, notes: '', confirmed: false, overrideReason: null,
+        timeA: null, timeB: null, dnfA: false, dnfB: false, timerStart: null, confirmed: false, overrideReason: null,
         winnerTo: isLast ? { matchId: 'GF-1', slot: 0 } : { matchId: `UB-${r + 1}-${Math.floor(i / 2)}`, slot: (i % 2) as 0 | 1 },
         loserTo, propagated: false,
       })
@@ -147,7 +147,7 @@ export function generateTournament(participants: Participant[]): { M: number; sl
         matches.push({
           id: `LB-${L}-${i}`, bracket: 'LB', round: L, source1, source2,
           p1: undefined, p2: undefined, winner: null, loser: null, questId: null, status: 'upcoming',
-          timeA: null, timeB: null, dnfA: false, dnfB: false, proofA: null, proofB: null, notes: '', confirmed: false, overrideReason: null,
+          timeA: null, timeB: null, dnfA: false, dnfB: false, timerStart: null, confirmed: false, overrideReason: null,
           winnerTo, loserTo: null, propagated: false,
         })
       }
@@ -161,7 +161,7 @@ export function generateTournament(participants: Participant[]): { M: number; sl
     source1: { type: 'match', matchId: `UB-${k}-0`, result: 'winner' },
     source2: gfSource2,
     p1: undefined, p2: undefined, winner: null, loser: null, questId: null, status: 'upcoming',
-    timeA: null, timeB: null, dnfA: false, dnfB: false, proofA: null, proofB: null, notes: '', confirmed: false, overrideReason: null,
+    timeA: null, timeB: null, dnfA: false, dnfB: false, timerStart: null, confirmed: false, overrideReason: null,
     winnerTo: null, loserTo: null, propagated: false,
   })
 
