@@ -26,9 +26,9 @@ export function useTournamentApp() {
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null)
   const [newParticipantName, setNewParticipantName] = useState('')
   const [importText, setImportText] = useState('')
-  const [editId, setEditId] = useState<string | null>(null)
+  const [editId, setEditId] = useState<number | null>(null)
   const [editName, setEditName] = useState('')
-  const [overrideChoice, setOverrideChoice] = useState('')
+  const [overrideChoice, setOverrideChoice] = useState<number | null>(null)
   const [overrideReason, setOverrideReason] = useState('')
   const [timeAInput, setTimeAInput] = useState('')
   const [timeBInput, setTimeBInput] = useState('')
@@ -76,7 +76,7 @@ export function useTournamentApp() {
     setDnfA(sm.dnfA)
     setDnfB(sm.dnfB)
     setNotesInput(sm.notes)
-    setOverrideChoice('')
+    setOverrideChoice(null)
     setOverrideReason('')
   }, [selectedMatchId, current])
 
@@ -97,7 +97,7 @@ export function useTournamentApp() {
     if (!t) t = createTournament()
     if (t.status !== 'setup') { setError('Tournament locked. Cannot add participants.'); return }
     if (t.participants.some((p) => p.name.toLowerCase() === name.toLowerCase())) { setError('Duplicate name.'); return }
-    const p: Participant = { id: crypto.randomUUID(), name, wins: 0, losses: 0, bestTime: null, eliminated: false, champion: false }
+    const p: Participant = { id: Date.now() + Math.floor(Math.random() * 1000), name, wins: 0, losses: 0, bestTime: null, eliminated: false, champion: false }
     const updated = { ...t, participants: [...t.participants, p] }
     setState((prev) => ({ ...prev, current: updated }))
     setNewParticipantName('')
@@ -115,7 +115,7 @@ export function useTournamentApp() {
     for (const ln of lines) {
       if (existing.has(ln.toLowerCase())) continue
       existing.add(ln.toLowerCase())
-      added.push({ id: crypto.randomUUID(), name: ln, wins: 0, losses: 0, bestTime: null, eliminated: false, champion: false })
+      added.push({ id: Date.now() + Math.floor(Math.random() * 1000) + added.length, name: ln, wins: 0, losses: 0, bestTime: null, eliminated: false, champion: false })
     }
     const updated = { ...t, participants: [...t.participants, ...added] }
     setState((prev) => ({ ...prev, current: updated }))
@@ -123,7 +123,7 @@ export function useTournamentApp() {
     setError(null)
   }
 
-  function deleteParticipant(id: string) {
+  function deleteParticipant(id: number) {
     updateCurrent((t) => {
       if (t.status !== 'setup') return t
       return { ...t, participants: t.participants.filter((p) => p.id !== id) }
@@ -217,20 +217,20 @@ export function useTournamentApp() {
     reader.readAsDataURL(file)
   }
 
-  function determineWinner(m: Match): string | null {
+  function determineWinner(m: Match): number | null {
     const aValid = !m.dnfA && m.timeA !== null
     const bValid = !m.dnfB && m.timeB !== null
     if (aValid && bValid) {
-      if (m.timeA! < m.timeB!) return m.p1 as string
-      if (m.timeB! < m.timeA!) return m.p2 as string
+      if (m.timeA! < m.timeB!) return m.p1 as number
+      if (m.timeB! < m.timeA!) return m.p2 as number
       return null
     }
-    if (aValid && !bValid) return m.p1 as string
-    if (!aValid && bValid) return m.p2 as string
+    if (aValid && !bValid) return m.p1 as number
+    if (!aValid && bValid) return m.p2 as number
     return null
   }
 
-  function confirmResult(manualWinner: string | null, reason: string) {
+  function confirmResult(manualWinner: number | null, reason: string) {
     if (!selectedMatchId || !current) return
     const m = current.matches.find((x) => x.id === selectedMatchId)
     if (!m) return
@@ -263,7 +263,7 @@ export function useTournamentApp() {
       mm.status = 'completed'
       mm.confirmed = true
       mm.overrideReason = manualWinner ? reason.trim() : null
-      const recomputeBest = (pid: string) => {
+      const recomputeBest = (pid: number) => {
         const times = matches
           .filter((mt) => mt.status === 'completed' || mt.id === mm.id)
           .flatMap((mt) => {

@@ -1,4 +1,4 @@
-import type { Match, Tournament, TournamentConfig } from '../types'
+import type { Match, Tournament, TournamentConfig, PlayerId } from '../types'
 
 export function defaultConfig(): TournamentConfig {
   return {
@@ -18,7 +18,7 @@ export function defaultConfig(): TournamentConfig {
 
 export function createTournament(): Tournament {
   return {
-    id: crypto.randomUUID(),
+    id: Date.now(),
     config: defaultConfig(),
     status: 'setup',
     participants: [],
@@ -31,11 +31,11 @@ export function createTournament(): Tournament {
   }
 }
 
-export function nameOf(tourn: Tournament, id: string | null | undefined): string {
+export function nameOf(tourn: Tournament, id: PlayerId | null | undefined): string {
   if (id === undefined) return 'TBD'
   if (id === null) return 'BYE'
   const p = tourn.participants.find((x) => x.id === id)
-  return p ? p.name : id
+  return p ? p.name : String(id)
 }
 
 export function stageForMatch(m: Match, stages: string[]): string {
@@ -54,7 +54,7 @@ export function assignQuestsToMatches(t: Tournament): Tournament {
     const stage = stageForMatch(m, t.config.stages)
     const assigned = t.config.questAssignments[stage] ?? []
     if (assigned.length === 0) continue
-    let questId: string
+    let questId: number
     if (t.config.randomizerMode === 'stage-based' && stageQuestSelection[stage]) {
       questId = stageQuestSelection[stage]
     } else {

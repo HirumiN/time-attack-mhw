@@ -138,7 +138,7 @@ export function TournamentView({ app }: { app: ReturnType<typeof useTournamentAp
               </div>
               <div className="override-box">
                 <p className="muted">Manual override (tie/DNF adjudication):</p>
-                <select className="input" value={overrideChoice} onChange={(e) => setOverrideChoice(e.target.value)}>
+                <select className="input" value={overrideChoice ?? ''} onChange={(e) => setOverrideChoice(e.target.value ? Number(e.target.value) : null)}>
                   <option value="">Select winner…</option>
                   <option value={selectedMatch.p1!}>{nameOf(current, selectedMatch.p1)}</option>
                   <option value={selectedMatch.p2!}>{nameOf(current, selectedMatch.p2)}</option>

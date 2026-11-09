@@ -16,7 +16,8 @@ export function SetupView({ app }: { app: ReturnType<typeof useTournamentApp> })
   if (!current) {
     return (
       <section className="panel">
-        <h3 className="section-title">Tournament Setup</h3>
+        <h3 className="section-title">Quest Assignment</h3>
+        <p className="muted">Create a tournament first to start assigning quests.</p>
         <button className="btn btn-primary" onClick={newTournament}>New Tournament</button>
       </section>
     )
@@ -39,7 +40,7 @@ export function SetupView({ app }: { app: ReturnType<typeof useTournamentApp> })
   }, [current?.config.stages, current?.config.questAssignments])
   const locked = current.status !== 'setup'
 
-  function assignQuest(qid: string) {
+  function assignQuest(qid: number) {
     updateCurrent((t) => {
       if (t.status !== 'setup') return t
       const stage = selectedStage
@@ -58,7 +59,7 @@ export function SetupView({ app }: { app: ReturnType<typeof useTournamentApp> })
     })
   }
 
-  function removeQuest(stage: string, qid: string) {
+  function removeQuest(stage: string, qid: number) {
     updateCurrent((t) => {
       if (t.status !== 'setup') return t
       const currentAssigned = t.config.questAssignments[stage] ?? []
@@ -75,13 +76,16 @@ export function SetupView({ app }: { app: ReturnType<typeof useTournamentApp> })
     })
   }
 
-  function addStage() {
-    const name = prompt('Stage name?')
-    if (!name) return
+  function clearAll() {
     updateCurrent((t) => {
       if (t.status !== 'setup') return t
-      if (t.config.stages.includes(name)) return t
-      return { ...t, config: { ...t.config, stages: [...t.config.stages, name] } }
+      const cleared: Record<string, number[]> = {}
+      for (const s of t.config.stages) cleared[s] = []
+      return {
+        ...t,
+        config: { ...t.config, questAssignments: cleared },
+        stageQuestSelection: {},
+      }
     })
   }
 
@@ -92,13 +96,7 @@ export function SetupView({ app }: { app: ReturnType<typeof useTournamentApp> })
 
   return (
     <section className="panel">
-      <h3 className="section-title">Tournament Setup</h3>
-      <div className="btnrow"><button className="btn btn-ghost" onClick={newTournament}>New Tournament</button></div>
-      <div className="row">
-        <label style={{ flex: 1 }}>Tournament Name<input className="input" value={current.config.name} disabled={locked} onChange={(e) => updateConfig('name', e.target.value)} /></label>
-      </div>
-
-      <h4 className="subsection">Quest Assignment</h4>
+      <h3 className="section-title">Quest Assignment</h3>
       <div className="btnrow">
         <CustomSelect
           value={selectedStage}
@@ -115,7 +113,7 @@ export function SetupView({ app }: { app: ReturnType<typeof useTournamentApp> })
           onChange={(v) => updateConfig('randomizerMode', v as any)}
           disabled={locked}
         />
-        <button className="btn btn-primary" onClick={addStage} disabled={locked}>Add Stage</button>
+        <button className="btn btn-danger" onClick={clearAll} disabled={locked}>Clear All</button>
       </div>
 
       <div className="quest-assignment">

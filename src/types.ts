@@ -1,4 +1,4 @@
-export type PlayerId = string
+export type PlayerId = number
 
 export type Source =
   | { type: 'seed'; seedIndex: number }
@@ -8,7 +8,7 @@ export type Source =
 export interface Route { matchId: string; slot: 0 | 1 }
 
 export interface Quest {
-  id: string
+  id: number
   name: string
   monster: string
 }
@@ -16,7 +16,7 @@ export interface Quest {
 export interface Match {
   id: string
   bracket: 'UB' | 'LB' | 'GF'
-  questId: string | null
+  questId: number | null
   round: number
   source1: Source
   source2: Source
@@ -40,7 +40,7 @@ export interface Match {
 }
 
 export interface Participant {
-  id: string
+  id: number
   name: string
   wins: number
   losses: number
@@ -59,19 +59,19 @@ export interface TournamentConfig {
   timePrecision: 'ms'
   confirmMode: 'admin' | 'auto'
   stages: string[]
-  questAssignments: Record<string, string[]>
+  questAssignments: Record<string, number[]>
   randomizerMode: 'stage-based' | 'match-based'
 }
 
 export interface Tournament {
-  id: string
+  id: number
   config: TournamentConfig
   status: 'setup' | 'ready' | 'in_progress' | 'completed'
   participants: Participant[]
   matches: Match[]
   slotPlayers: (PlayerId | null)[]
-  stageQuestSelection: Record<string, string>
-  championId: string | null
+  stageQuestSelection: Record<string, number>
+  championId: number | null
   createdAt: number
   completedAt: number | null
 }
