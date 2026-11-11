@@ -48,6 +48,7 @@ export function stageForMatch(m: Match, stages: string[]): string {
 export function assignQuestsToMatches(t: Tournament): Tournament {
   const matches = t.matches.map((m) => ({ ...m }))
   const stageQuestSelection = { ...t.stageQuestSelection }
+  let changed = false
   for (const m of matches) {
     const readyLike = m.status === 'ready' || m.status === 'awaiting' || m.status === 'in_progress' || m.status === 'completed'
     if (!readyLike || m.questId || !m.p1 || !m.p2) continue
@@ -62,6 +63,8 @@ export function assignQuestsToMatches(t: Tournament): Tournament {
       if (t.config.randomizerMode === 'stage-based') stageQuestSelection[stage] = questId
     }
     m.questId = questId
+    changed = true
   }
+  if (!changed) return t
   return { ...t, matches, stageQuestSelection }
 }

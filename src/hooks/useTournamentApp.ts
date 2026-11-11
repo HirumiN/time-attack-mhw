@@ -5,6 +5,7 @@ import { createTournament, nameOf, assignQuestsToMatches } from '../utils/tourna
 import questsData from '../../quests.json'
 import type { Quest } from '../types'
 import { generateTournament, refresh } from '../engine/bracket'
+import { decodeSaveCode, encodeSaveCode } from '../utils/saveCode'
 import bgImage from '../assets/mhw iceborne.webp'
 
 export { bgImage, formatTime, nameOf }
@@ -181,6 +182,21 @@ export function useTournamentApp() {
     })
   }
 
+  /* save code */
+  async function getSaveCode() {
+    if (!state.current) return ''
+    return encodeSaveCode({ current: state.current, history: state.history })
+  }
+
+  async function loadSaveCode(code: string) {
+    const { current: loaded, history } = await decodeSaveCode(code)
+    if (!loaded) throw new Error('Save code does not contain a valid tournament.')
+    setState({ current: loaded, history, view: 'tournament' })
+    setSelectedMatchId(null)
+    setError(null)
+    setInfo('Tournament loaded from save code.')
+  }
+
   /* match center */
   const selectedMatch = current ? current.matches.find((m) => m.id === selectedMatchId) ?? null : null
 
@@ -313,6 +329,7 @@ export function useTournamentApp() {
     timeAInput, setTimeAInput, timeBInput, setTimeBInput, dnfA, setDnfA, dnfB, setDnfB,
     setView, updateCurrent, addParticipant, importParticipants, deleteParticipant,
     updateConfig, runRandomizer, confirmStart, regenerate, newTournament,
+    getSaveCode, loadSaveCode,
     saveTimes, confirmResult,
     ubRounds, lbRounds, championParticipant, selectedMatch, quests,
     setError, setInfo,

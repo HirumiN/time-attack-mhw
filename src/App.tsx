@@ -2,8 +2,16 @@ import { useTournamentApp } from './hooks/useTournamentApp'
 import { ParticipantsView } from './components/ParticipantsView'
 import { SetupView } from './components/SetupView'
 import { TournamentView } from './components/TournamentView'
+import { SaveView } from './components/SaveView'
 import bgImage from './assets/mhw iceborne.webp'
 import './App.css'
+
+const views = [
+  { id: 'participants', label: 'Participants' },
+  { id: 'setup', label: 'Setup' },
+  { id: 'tournament', label: 'Tournament' },
+  { id: 'save', label: 'Save / Load' },
+]
 
 export default function App() {
   const app = useTournamentApp()
@@ -20,9 +28,9 @@ export default function App() {
       </header>
 
       <nav className="nav">
-        {['participants', 'setup', 'tournament'].map((v) => (
-          <button key={v} className={`nav-btn ${state.view === v ? 'active' : ''}`} onClick={() => setView(v)}>
-            {v.charAt(0).toUpperCase() + v.slice(1)}
+        {views.map((v) => (
+          <button key={v.id} className={`nav-btn ${state.view === v.id ? 'active' : ''}`} onClick={() => setView(v.id)}>
+            {v.label}
           </button>
         ))}
       </nav>
@@ -33,6 +41,7 @@ export default function App() {
         {state.view === 'participants' && <ParticipantsView app={app} />}
         {state.view === 'setup' && <SetupView app={app} />}
         {state.view === 'tournament' && <TournamentView app={app} />}
+        {state.view === 'save' && <SaveView app={app} />}
       </main>
     </div>
   )
