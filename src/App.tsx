@@ -15,7 +15,7 @@ const views = [
 
 export default function App() {
   const app = useTournamentApp()
-  const { state, setView } = app
+  const { state, setView, notice, dismissNotice } = app
 
   return (
     <div className="app">
@@ -34,6 +34,13 @@ export default function App() {
           </button>
         ))}
       </nav>
+
+      {notice && (
+        <div className="toast" role="status" aria-live="polite">
+          <span>{notice.message}</span>
+          <button onClick={dismissNotice} aria-label="Dismiss notification">×</button>
+        </div>
+      )}
 
       {app.error && <div className="banner error">{app.error}<button onClick={() => app.setError(null)}>×</button></div>}
 

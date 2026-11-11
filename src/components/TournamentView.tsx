@@ -89,7 +89,7 @@ export function TournamentView({ app }: { app: ReturnType<typeof useTournamentAp
       <section className="panel">
       <h3 className="section-title">Tournament</h3>
       <div className="btnrow">
-        <button className="btn btn-primary" onClick={runRandomizer} disabled={current.status !== 'setup' || current.participants.length < 2}>Generate Bracket (Random)</button>
+        <button className="btn btn-primary" onClick={runRandomizer} disabled={current.status !== 'setup'}>Generate Bracket (Random)</button>
         {current.status === 'ready' && <button className="btn btn-ghost" onClick={regenerate}>Regenerate</button>}
         {current.status === 'ready' && <button className="btn btn-primary" onClick={confirmStart}>Start Tournament</button>}
         <button className="btn btn-ghost" onClick={newTournament}>New Tournament</button>

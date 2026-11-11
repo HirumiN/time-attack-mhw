@@ -23,6 +23,7 @@ export function useTournamentApp() {
   })
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
+  const [notice, setNotice] = useState<{ id: number; message: string } | null>(null)
   const [randomizing, setRandomizing] = useState(false)
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null)
   const [newParticipantName, setNewParticipantName] = useState('')
@@ -40,6 +41,12 @@ export function useTournamentApp() {
   useEffect(() => {
     try { localStorage.setItem('mhw_state', JSON.stringify(state)) } catch {}
   }, [state])
+
+  useEffect(() => {
+    if (!notice) return
+    const id = setTimeout(() => setNotice(null), 3000)
+    return () => clearTimeout(id)
+  }, [notice])
 
   useEffect(() => {
     if (state.current && state.current.status === 'completed' && !state.history.find((h) => h.id === state.current!.id)) {
@@ -79,6 +86,12 @@ export function useTournamentApp() {
   }, [selectedMatchId, current])
 
   function setView(v: string) { setState((p) => ({ ...p, view: v })) }
+
+  function showNotice(message: string) {
+    setNotice({ id: Date.now(), message })
+  }
+
+  function dismissNotice() { setNotice(null) }
 
   function updateCurrent(updater: (t: Tournament) => Tournament) {
     setState((p) => {
@@ -151,7 +164,12 @@ export function useTournamentApp() {
 
   /* randomizer */
   function runRandomizer() {
-    if (!current || current.participants.length < 2) { setError('Need at least 2 participants.'); return }
+    if (!current || current.participants.length < 2) {
+      setView('participants')
+      setError(null)
+      showNotice('Add at least 2 participants before generating the bracket.')
+      return
+    }
     if (current.status !== 'setup') { setError('Tournament already generated.'); return }
     setRandomizing(true)
     setError(null)
@@ -322,7 +340,7 @@ export function useTournamentApp() {
   const championParticipant = current && current.championId ? current.participants.find((p) => p.id === current.championId) : null
 
   return {
-    state, current, error, info, randomizing, selectedMatchId, setSelectedMatchId,
+    state, current, error, info, notice, dismissNotice, randomizing, selectedMatchId, setSelectedMatchId,
     newParticipantName, setNewParticipantName, importText, setImportText,
     editId, editName, setEditName, setEditId, startEdit, saveEdit,
     overrideChoice, setOverrideChoice, overrideReason, setOverrideReason,
