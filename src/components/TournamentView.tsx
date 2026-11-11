@@ -18,11 +18,6 @@ export function TournamentView({ app }: { app: ReturnType<typeof useTournamentAp
   } = app
 
   const startPerfRef = useRef<number | null>(null)
-  const bracketRef = useRef<HTMLDivElement>(null)
-  const ubFinalRef = useRef<HTMLDivElement>(null)
-  const lbFinalRef = useRef<HTMLDivElement>(null)
-  const gfRef = useRef<HTMLDivElement>(null)
-  const [connectorLines, setConnectorLines] = useState<Array<{ x1: number; y1: number; x2: number; y2: number }>>([])
   const [timerStartEpoch, setTimerStartEpoch] = useState<number | null>(null)
   const [now, setNow] = useState(Date.now())
 
@@ -39,37 +34,6 @@ export function TournamentView({ app }: { app: ReturnType<typeof useTournamentAp
     const id = setInterval(() => setNow(Date.now()), 50)
     return () => clearInterval(id)
   }, [timerStartEpoch, selectedMatch?.timeA, selectedMatch?.timeB, selectedMatch?.dnfA, selectedMatch?.dnfB])
-
-  useEffect(() => {
-    if (!current) return
-    const measure = () => {
-      const base = bracketRef.current
-      const gf = gfRef.current
-      if (!base || !gf) return
-      const baseRect = base.getBoundingClientRect()
-      const gfRect = gf.getBoundingClientRect()
-      const lines: Array<{ x1: number; y1: number; x2: number; y2: number }> = []
-      const gfX = gfRect.left - baseRect.left
-      const gfY = gfRect.top + gfRect.height / 2 - baseRect.top
-      if (ubFinalRef.current) {
-        const r = ubFinalRef.current.getBoundingClientRect()
-        lines.push({ x1: r.right - baseRect.left, y1: r.top + r.height / 2 - baseRect.top, x2: gfX, y2: gfY })
-      }
-      if (lbFinalRef.current && lbRounds.length > 0) {
-        const r = lbFinalRef.current.getBoundingClientRect()
-        lines.push({ x1: r.right - baseRect.left, y1: r.top + r.height / 2 - baseRect.top, x2: gfX, y2: gfY })
-      }
-      setConnectorLines(lines)
-    }
-    measure()
-    const ro = new ResizeObserver(measure)
-    if (bracketRef.current) ro.observe(bracketRef.current)
-    window.addEventListener('resize', measure)
-    return () => {
-      ro.disconnect()
-      window.removeEventListener('resize', measure)
-    }
-  }, [current, current?.matches, ubRounds, lbRounds])
 
   function startBoth() {
     if (!selectedMatch || selectedMatch.timerStart != null) return
@@ -156,12 +120,12 @@ export function TournamentView({ app }: { app: ReturnType<typeof useTournamentAp
       {current.matches.length > 0 && (
         <>
           <h4 className="subsection">Bracket</h4>
-          <div className="bracket-layout" ref={bracketRef} style={{ position: 'relative' }}>
+          <div className="bracket-layout">
             <div className="bracket-main">
               <div className="bracket-scroll">
                 <div className="rounds">
                   {ubRounds.map((r) => (
-                    <div className="round" key={`ub-${r}`} ref={r === ubRounds[ubRounds.length - 1] ? ubFinalRef : undefined}>
+                    <div className="round" key={`ub-${r}`}>
                       <div className="round-title">UB Round {r}</div>
                       {current.matches.filter((m) => m.bracket === 'UB' && m.round === r).map((m) => (
                         <MatchCard key={m.id} m={m} tourn={current} onSelect={() => setSelectedMatchId(m.id)} />
@@ -174,7 +138,7 @@ export function TournamentView({ app }: { app: ReturnType<typeof useTournamentAp
                 <div className="bracket-scroll" style={{ marginTop: 16 }}>
                   <div className="rounds">
                     {lbRounds.map((r) => (
-                      <div className="round" key={`lb-${r}`} ref={r === lbRounds[lbRounds.length - 1] ? lbFinalRef : undefined}>
+                      <div className="round" key={`lb-${r}`}>
                         <div className="round-title">LB Round {r}</div>
                         {current.matches.filter((m) => m.bracket === 'LB' && m.round === r).map((m) => (
                           <MatchCard key={m.id} m={m} tourn={current} onSelect={() => setSelectedMatchId(m.id)} />
@@ -186,17 +150,12 @@ export function TournamentView({ app }: { app: ReturnType<typeof useTournamentAp
               )}
             </div>
             <div className="gf-column">
-              <div className="gf-wrap" ref={gfRef}>
+              <div className="gf-wrap">
                 {current.matches.filter((m) => m.bracket === 'GF').map((m) => (
                   <MatchCard key={m.id} m={m} tourn={current} grandFinal onSelect={() => setSelectedMatchId(m.id)} />
                 ))}
               </div>
             </div>
-            <svg className="bracket-connectors" width="100%" height="100%">
-              {connectorLines.map((l, i) => (
-                <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke="#75BFE8" strokeWidth="2" strokeLinecap="round" />
-              ))}
-            </svg>
           </div>
         </>
       )}

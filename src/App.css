@@ -303,22 +303,26 @@ body {
   align-items: flex-start;
 }
 .bracket-main {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
 }
 .gf-column {
-  flex: 0 0 220px;
+  flex: 0 0 200px;
+  margin-left: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+.gf-wrap { width: 100%; }
+.gf-wrap .match { width: 100%; margin-bottom: 0; }
 @media (max-width: 760px) {
   .bracket-layout { flex-direction: column; }
-  .gf-column { flex: 1 1 auto; width: 100%; }
+  .gf-column { flex: 1 1 auto; width: 100%; margin-left: 0; }
 }
 .match.grand-final-card {
   border: 2px solid #75BFE8;
   background: rgba(27, 43, 59, 0.85);
   box-shadow: 0 0 18px rgba(117, 191, 232, 0.25);
-  transform: scale(1.08);
-  margin: 24px 0;
 }
 .match.grand-final-card .match-id {
   font-size: 12px;
@@ -328,22 +332,8 @@ body {
 .match.grand-final-card .pname {
   font-size: 16px;
 }
-.bracket-connectors {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: visible;
-}
 .bracket-layout {
   align-items: center;
-}
-.gf-column {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .shared-timer {
